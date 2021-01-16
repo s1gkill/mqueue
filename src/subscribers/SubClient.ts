@@ -1,31 +1,44 @@
-import { Topic } from "../Topic";
-import { subscribers } from '../index';
+import { publishers, subscribers } from '../index';
+import { Client } from "../interfaces/Client";
 
-export class SubClient {
+// TODO: abstract class for clients?
+export class SubClient implements Client {
   id: string;
-  topicList: Set<Topic>
+  topicList: Array<string>;
 
-  constructor() {
+  constructor(topicList: Array<string> = []) {
     this.id = `s${Date.now().toString()}`;
-    this.topicList = new Set();
+    this.topicList = topicList;
 
     subscribers.add(this);
   }
 
-  addTopic(topic: Topic): boolean {
-    if (this.topicList.has(topic)) {
+  addTopic(topic: string): boolean {
+    if (!publishers.getAvailableTopics().includes(topic)) {
+      console.log(`/// Topic with name '${topic}' does not exist ///`);
       return false;
     }
 
-    this.topicList.add(topic);
+    if (this.subscriptionExists(topic)) {
+      console.log(`/// Already subscribed to topic with name '${topic}' ///`);
+      return false;
+    }
+
+    this.topicList.push(topic);
     return true;
   }
 
-  removeTopic(topic: Topic): boolean {
-    return this.topicList.delete(topic);
+  removeTopic(topic: string): boolean {
+    this.topicList = this.topicList.filter(existingTopic => existingTopic !== topic);
+    return true;
   }
 
+  // TODO: remove instance or opt out from receiving events?
   destroy(): boolean {
     return subscribers.remove(this);
+  }
+
+  private subscriptionExists(topic: string): boolean {
+    return !!this.topicList.find(existingTopic => existingTopic === topic);
   }
 }

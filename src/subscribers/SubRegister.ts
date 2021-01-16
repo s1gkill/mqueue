@@ -1,6 +1,7 @@
+import { Register } from "../interfaces/Register";
 import { SubClient } from "./SubClient";
 
-export class SubRegister {
+export class SubRegister implements Register {
   subscribers: Set<SubClient>;
 
   constructor() {

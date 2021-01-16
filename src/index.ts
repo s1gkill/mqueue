@@ -1,21 +1,24 @@
 import { Queue } from "./queue/Queue";
+import { PubClient } from "./publishers/PubClient";
 import { PubRegister } from "./publishers/PubRegister";
 import { SubRegister } from "./subscribers/SubRegister";
+import { SubClient } from "./subscribers/SubClient";
 
 export const mQueue = new Queue();
 export const publishers = new PubRegister();
 export const subscribers = new SubRegister();
 
-// const subRegister = new SubRegister();
-// const sub1 = new SubClient('123');
-// const sub2 = new SubClient('456');
-// subRegister.add(sub1);
-// subRegister.add(sub2);
-// subRegister.printSubscribers();
-// const topic1 = new Topic('topic1');
-// sub1.addTopic(topic1);
-// sub1.publish(topic1, new Message('key', 'value'));
-// MQueue.printQueueElements();
+const sub1 = new SubClient();
+const sub2 = new SubClient();
+const pub1 = new PubClient(['Money']);
+const pub2 = new PubClient(['Books']);
+subscribers.add(sub1);
+subscribers.add(sub2);
+sub1.addTopic('Money');
+sub1.addTopic('Paska');
+sub1.addTopic('Money');
+console.log(publishers.getAvailableTopics());
+
 
 
 

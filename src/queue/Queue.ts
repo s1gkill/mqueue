@@ -1,9 +1,8 @@
-import { Message } from "../Message";
-import { Topic } from "../Topic";
+import { Message } from "../interfaces/Message";
 
 interface QueueElement {
   message: Message,
-  topic: Topic
+  topic: string
 }
 
 export class Queue {
@@ -18,8 +17,21 @@ export class Queue {
     return true;
   }
 
-  dequeue(): void {
-    this.queue.pop();
+  dequeue(): boolean {
+    if (this.isEmpty()) {
+      return false;
+    }
+
+    this.queue.shift();
+    return true;
+  }
+
+  getFront(): QueueElement {
+    return this.queue[0];
+  }
+
+  isEmpty(): boolean {
+    return this.queue.length === 0;
   }
 
   printQueueElements(): void {

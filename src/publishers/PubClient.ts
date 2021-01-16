@@ -1,41 +1,47 @@
 import { mQueue, publishers } from "..";
-import { Message } from "../Message";
-import { Topic } from "../Topic";
+import { Client } from "../interfaces/Client";
+import { Message } from "../interfaces/Message";
 
-export class PubClient {
+export class PubClient implements Client {
   id: string;
-  topicList: Set<Topic>
+  topicList: Array<string>;
 
-  constructor() {
+  constructor(topicList: Array<string> = []) {
     this.id = `p${Date.now().toString()}`;
-    this.topicList = new Set();
+    this.topicList = topicList;
 
     publishers.add(this);
   }
 
-  publish(topic: Topic, message: Message): boolean {
-    if (!this.topicList.has(topic)) {
+  publish(topic: string, message: Message): boolean {
+    if (!this.topicExists(topic)) {
+      console.log(`/// Topic with name ${topic} does not exist`);
       return false;
     }
-
     mQueue.enqueue({ topic, message });
     return true;
   }
 
-  addTopic(topic: Topic): boolean {
-    if (this.topicList.has(topic)) {
+  addTopic(topic: string): boolean {
+    if (publishers.getAvailableTopics().includes(topic)) {
+      console.log(`/// Topic with name ${topic} already exists`);
       return false;
     }
 
-    this.topicList.add(topic);
+    this.topicList.push(topic);
     return true;
   }
 
-  removeTopic(topic: Topic): boolean {
-    return this.topicList.delete(topic);
+  removeTopic(topic: string): boolean {
+    this.topicList = this.topicList.filter(existingTopic => existingTopic !== topic);
+    return true;
   }
 
   destroy(): boolean {
-    return publishers.remove(this);
+    return publishers.remove(this.id);
+  }
+
+  private topicExists(topic: string) {
+    return !!this.topicList.find(existingTopic => existingTopic === topic);
   }
 }

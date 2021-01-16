@@ -1,23 +1,25 @@
+import { Register } from "../interfaces/Register";
 import { PubClient } from "./PubClient";
 
-export class PubRegister {
-  publishers: Set<PubClient>;
+export class PubRegister implements Register {
+  publishers: Array<PubClient>
 
   constructor() {
-    this.publishers = new Set();
+    this.publishers = [];
   }
 
   add(publisher: PubClient): boolean {
-    if (this.publishers.has(publisher)) {
-      return false;
-    }
-
-    this.publishers.add(publisher);
+    this.publishers.push(publisher);
     return true;
   }
 
-  remove(publisher: PubClient): boolean {
-    return this.publishers.delete(publisher);
+  remove(publisherId: string): boolean {
+    this.publishers = this.publishers.filter(publisher => publisher.id !== publisherId);
+    return true;
+  }
+
+  getAvailableTopics(): Array<string> {
+    return this.publishers.reduce((topics, { topicList }) => [...topics, ...topicList], <string[]>[]);
   }
 
   printPublishers(): void {
