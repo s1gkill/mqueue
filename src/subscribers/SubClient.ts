@@ -1,20 +1,29 @@
-import { publishers, subscribers } from '../index';
 import { Client } from "../interfaces/Client";
+import { SubRegister } from './SubRegister';
+import { SubRegisterService } from './SubRegisterService';
+import { PubRegisterService } from '../publishers/PubRegisterService';
+import { PubRegister } from "../publishers/PubRegister";
 
 // TODO: abstract class for clients?
 export class SubClient implements Client {
   id: string;
   topicList: Array<string>;
+  subscribers: SubRegister;
+  publishers: PubRegister;
 
   constructor(topicList: Array<string> = []) {
     this.id = `s${Date.now().toString()}`;
     this.topicList = topicList;
 
-    subscribers.add(this);
+    this.subscribers = SubRegisterService.getInstance();
+    this.publishers = PubRegisterService.getInstance();
+
+    this.subscribers.add(this);
   }
 
+  // TODO: validate topic string format
   addTopic(topic: string): boolean {
-    if (!publishers.getAvailableTopics().includes(topic)) {
+    if (!this.publishers.getAvailableTopics().includes(topic)) {
       console.log(`/// Topic with name '${topic}' does not exist ///`);
       return false;
     }
@@ -33,9 +42,9 @@ export class SubClient implements Client {
     return true;
   }
 
-  // TODO: remove instance or opt out from receiving events?
+  // TODO: remove instance or opt out from receiving events? will GC remove it?
   destroy(): boolean {
-    return subscribers.remove(this);
+    return this.subscribers.remove(this.id);
   }
 
   private subscriptionExists(topic: string): boolean {

@@ -2,23 +2,20 @@ import { Register } from "../interfaces/Register";
 import { SubClient } from "./SubClient";
 
 export class SubRegister implements Register {
-  subscribers: Set<SubClient>;
+  subscribers: Array<SubClient>;
 
   constructor() {
-    this.subscribers = new Set();
+    this.subscribers = [];
   }
 
   add(subscriber: SubClient): boolean {
-    if (this.subscribers.has(subscriber)) {
-      return false;
-    }
-
-    this.subscribers.add(subscriber);
+    this.subscribers.push(subscriber);
     return true;
   }
 
-  remove(subscriber: SubClient): boolean {
-    return this.subscribers.delete(subscriber);
+  remove(subscriberId: string): boolean {
+    this.subscribers = this.subscribers.filter(subscriber => subscriber.id !== subscriberId);
+    return true;
   }
 
   printSubscribers(): void {
