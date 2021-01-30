@@ -1,7 +1,7 @@
-import { PubRegister } from '../publishers/PubRegister';
-import { SubClient } from '../subscribers/SubClient';
+import { PubRegister } from '../../publishers/PubRegister';
+import { SubClient } from '../../subscribers/SubClient';
 
-jest.mock('../publishers/PubRegister.ts');
+jest.mock('../../publishers/PubRegister.ts');
 
 describe('SubClient', () => {
   let instance: SubClient;
@@ -13,10 +13,17 @@ describe('SubClient', () => {
   });
 
   describe(('initialising'), () => {
-    it('should initialise with an id that has a prefix "s" and empty topic list', () => {
+    it('should initialise with an id and empty topic list', () => {
       const { id, topicList } = instance;
-      expect(id).toEqual(expect.stringMatching(/^s.*$/i));
+      expect(id).toBeDefined();
       expect(topicList).toEqual(expect.arrayContaining([]));
+    });
+
+    it('should initialise with given topics', () => {
+      const topic1 = 'topic1';
+      const topic2 = 'topic2';
+      instance = new SubClient([topic1, topic2])
+      expect(instance.topicList).toEqual(expect.arrayContaining([topic1, topic2]));
     });
   });
 

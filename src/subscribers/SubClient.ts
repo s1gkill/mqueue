@@ -3,6 +3,7 @@ import { SubRegister } from './SubRegister';
 import { SubRegisterService } from './SubRegisterService';
 import { PubRegisterService } from '../publishers/PubRegisterService';
 import { PubRegister } from "../publishers/PubRegister";
+import { generateGUID } from "../utils";
 
 // TODO: abstract class for clients?
 export class SubClient implements Client {
@@ -12,7 +13,7 @@ export class SubClient implements Client {
   publishers: PubRegister;
 
   constructor(topicList: Array<string> = []) {
-    this.id = `s${Date.now().toString()}`;
+    this.id = generateGUID();
     this.topicList = topicList;
 
     this.subscribers = SubRegisterService.getInstance();
@@ -44,7 +45,8 @@ export class SubClient implements Client {
 
   // TODO: remove instance or opt out from receiving events? will GC remove it?
   destroy(): boolean {
-    return this.subscribers.remove(this.id);
+    this.subscribers.remove(this.id);
+    return true;
   }
 
   private subscriptionExists(topic: string): boolean {

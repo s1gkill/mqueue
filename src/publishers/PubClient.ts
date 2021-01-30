@@ -1,16 +1,21 @@
-import { mQueue, publishers } from "..";
+import { mQueue } from "..";
 import { Client } from "../interfaces/Client";
 import { Message } from "../interfaces/Message";
+import { generateGUID } from "../utils";
+import { PubRegister } from "./PubRegister";
+import { PubRegisterService } from "./PubRegisterService";
 
 export class PubClient implements Client {
   id: string;
   topicList: Array<string>;
+  publishers: PubRegister;
 
   constructor(topicList: Array<string> = []) {
-    this.id = `p${Date.now().toString()}`;
+    this.id = generateGUID();
     this.topicList = topicList;
 
-    publishers.add(this);
+    this.publishers = PubRegisterService.getInstance();
+    this.publishers.add(this);
   }
 
   publish(topic: string, message: Message): boolean {
@@ -23,7 +28,7 @@ export class PubClient implements Client {
   }
 
   addTopic(topic: string): boolean {
-    if (publishers.getAvailableTopics().includes(topic)) {
+    if (this.publishers.getAvailableTopics().includes(topic)) {
       console.log(`/// Topic with name ${topic} already exists`);
       return false;
     }
@@ -38,7 +43,8 @@ export class PubClient implements Client {
   }
 
   destroy(): boolean {
-    return publishers.remove(this.id);
+    this.publishers.remove(this.id);
+    return true;
   }
 
   private topicExists(topic: string) {

@@ -19,10 +19,11 @@ export class PubRegister implements Register {
   }
 
   getAvailableTopics(): Array<string> {
+    console.log(this.publishers)
     return this.publishers.reduce((topics, { topicList }) => [...topics, ...topicList], <string[]>[]);
   }
 
-  printPublishers(): void {
-    console.log(this.publishers);
+  getPublishers(): Array<string> {
+    return this.publishers.map(publisher => publisher.id);
   }
 }
