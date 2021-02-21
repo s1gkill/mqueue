@@ -8,11 +8,11 @@ import { generateGUID } from "../utils";
 // TODO: abstract class for clients?
 export class SubClient implements Client {
   id: string;
-  topicList: Array<string>;
+  topicList: string[];
   subscribers: SubRegister;
   publishers: PubRegister;
 
-  constructor(topicList: Array<string> = []) {
+  constructor(topicList: string[] = []) {
     this.id = generateGUID();
     this.topicList = topicList;
 

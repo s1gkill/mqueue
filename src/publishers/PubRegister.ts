@@ -2,7 +2,7 @@ import { Register } from "../interfaces/Register";
 import { PubClient } from "./PubClient";
 
 export class PubRegister implements Register {
-  publishers: Array<PubClient>
+  publishers: PubClient[];
 
   constructor() {
     this.publishers = [];
@@ -18,12 +18,12 @@ export class PubRegister implements Register {
     return true;
   }
 
-  getAvailableTopics(): Array<string> {
+  getAvailableTopics(): string[] {
     console.log(this.publishers)
     return this.publishers.reduce((topics, { topicList }) => [...topics, ...topicList], <string[]>[]);
   }
 
-  getPublishers(): Array<string> {
+  getPublishers(): string[] {
     return this.publishers.map(publisher => publisher.id);
   }
 }

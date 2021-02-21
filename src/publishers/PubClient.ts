@@ -7,10 +7,10 @@ import { PubRegisterService } from "./PubRegisterService";
 
 export class PubClient implements Client {
   id: string;
-  topicList: Array<string>;
+  topicList: string[];
   publishers: PubRegister;
 
-  constructor(topicList: Array<string> = []) {
+  constructor(topicList: string[] = []) {
     this.id = generateGUID();
     this.topicList = topicList;
 

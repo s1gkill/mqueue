@@ -6,7 +6,7 @@ interface QueueElement {
 }
 
 export class Queue {
-  queue: Array<QueueElement>;
+  queue: QueueElement[];
 
   constructor() {
     this.queue = [];

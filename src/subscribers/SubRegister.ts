@@ -2,7 +2,7 @@ import { Register } from "../interfaces/Register";
 import { SubClient } from "./SubClient";
 
 export class SubRegister implements Register {
-  private subscribers: Array<SubClient>;
+  private subscribers: SubClient[];
 
   constructor() {
     this.subscribers = [];
@@ -16,7 +16,7 @@ export class SubRegister implements Register {
     this.subscribers = this.subscribers.filter(subscriber => subscriber.id !== subscriberId);
   }
 
-  getSubscribers(): Array<string> {
+  getSubscribers(): string[] {
     return this.subscribers.map(subscriber => subscriber.id);
   }
 }
